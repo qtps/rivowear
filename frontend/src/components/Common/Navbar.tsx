@@ -4,7 +4,9 @@ import { Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
 import CartDrawer from "../Layout/CartDrawer";
 import { useEffect, useState } from "react";
+import { useCart } from "../../context/useCart";
 const Navbar = () => {
+  const { itemCount } = useCart();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [navbarOpen, setNavbarOpen] = useState(false);
 
@@ -84,12 +86,12 @@ const Navbar = () => {
           >
             <HiOutlineShoppingBag className="h-6 w-6 text-gray-700" />
             <span className="bg-rabbit-red absolute -top-1 rounded-full px-2 py-0.5 text-xs text-white">
-              4
+              {itemCount}
             </span>
           </button>
           {/* search bar  */}
 
-          <SearchBar/>
+          <SearchBar />
 
           <button
             onClick={toggleNavbar}
@@ -125,7 +127,7 @@ const Navbar = () => {
           className={`fixed inset-0 z-40 bg-black/20 transition-opacity duration-300 md:hidden ${
             navbarOpen
               ? "visible opacity-100"
-              : "invisible pointer-events-none opacity-0"
+              : "pointer-events-none invisible opacity-0"
           }`}
           onClick={() => setNavbarOpen(false)}
           aria-label="Close menu"
@@ -149,9 +151,9 @@ const Navbar = () => {
                 to={item.to}
                 onClick={handleMenuItemClick}
                 tabIndex={navbarOpen ? 0 : -1}
-                className="group flex touch-manipulation items-center rounded-lg px-3 py-2.5 text-sm text-gray-700 transition-all duration-200 hover:bg-gray-100 hover:pl-4 hover:text-black active:scale-[0.98] active:bg-gray-100 active:text-black focus-visible:bg-gray-100 focus-visible:text-black focus-visible:outline-none"
+                className="group flex touch-manipulation items-center rounded-lg px-3 py-2.5 text-sm text-gray-700 transition-all duration-200 hover:bg-gray-100 hover:pl-4 hover:text-black focus-visible:bg-gray-100 focus-visible:text-black focus-visible:outline-none active:scale-[0.98] active:bg-gray-100 active:text-black"
               >
-                <span className="mr-2 h-1.5 w-1.5 rounded-full bg-transparent transition-colors duration-200 group-hover:bg-rabbit-red group-active:bg-rabbit-red group-focus-visible:bg-rabbit-red" />
+                <span className="group-hover:bg-rabbit-red group-active:bg-rabbit-red group-focus-visible:bg-rabbit-red mr-2 h-1.5 w-1.5 rounded-full bg-transparent transition-colors duration-200" />
                 <span>{item.label}</span>
               </Link>
             ))}
