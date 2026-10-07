@@ -1,5 +1,5 @@
-import { useState } from "react";
-// import { useCart } from "../../context/useCart";
+import { useRef, useState } from "react";
+import { useCart } from "../../context/useCart";
 
 const product = {
   productId: 3,
@@ -47,33 +47,41 @@ const product = {
 };
 
 const ProductDetails = () => {
-  // const { addToCart } = useCart();
+  const { addToCart } = useCart();
   const [selectedColor, setSelectedColor] = useState(product.colors[0].name);
   const [selectedSize, setSelectedSize] = useState(product.sizes[0]);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(
     product.colors[0].images[0],
   );
-  // const [added, setAdded] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
+  const toastTimer = useRef<number | undefined>(undefined);
   const selectedColorData =
     product.colors.find((color) => color.name === selectedColor) ??
     product.colors[0];
 
-  // const handleAddToCart = () => {
-  //   addToCart(
-  //     {
-  //       productId: product.productId,
-  //       name: product.name,
-  //       price: product.price,
-  //       size: selectedSize,
-  //       color: selectedColor,
-  //       image: selectedImage,
-  //     },
-  //     quantity,
-  //   );
-  //   setAdded(true);
-  //   window.setTimeout(() => setAdded(false), 1800);
-  // };
+  const handleAddToCart = () => {
+    addToCart(
+      {
+        productId: product.productId,
+        name: product.name,
+        price: product.price,
+        size: selectedSize,
+        color: selectedColor,
+        image: selectedImage,
+      },
+      quantity,
+    );
+    setToastVisible(true);
+
+    if (toastTimer.current) {
+      window.clearTimeout(toastTimer.current);
+    }
+
+    toastTimer.current = window.setTimeout(() => {
+      setToastVisible(false);
+    }, 1800);
+  };
 
   return (
     <section className="mx-auto max-w-6xl px-6 py-8 sm:py-12">
@@ -195,9 +203,9 @@ const ProductDetails = () => {
             </div>
           </div>
 
-          {/* API: onClick={handleAddToCart} */}
           <button
             type="button"
+            onClick={handleAddToCart}
             className="mt-6 rounded bg-gray-950 px-4 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
           >
             ADD TO CART
@@ -214,6 +222,15 @@ const ProductDetails = () => {
           </div>
         </div>
       </div>
+      {toastVisible && (
+        <div
+          className="fixed top-6 right-6 z-50 rounded-lg bg-gray-950 px-4 py-3 text-sm font-medium text-white shadow-lg"
+          role="status"
+          aria-live="polite"
+        >
+          {product.name} added to cart
+        </div>
+      )}
     </section>
   );
 };
